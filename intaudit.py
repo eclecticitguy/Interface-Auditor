@@ -33,7 +33,6 @@ for target_host in hosts:
     output = net_connect.send_command("show interface description")
 
     # Print hostname as header for data
-    # print "Target host: %s\n" % target_host
     print "Executing on host: %s" % target_host
 
     # Split interface output by newline
@@ -61,30 +60,20 @@ for target_host in hosts:
             # Set variable names for each item in line for easier reference based on line index
             int_name, int_status, int_protocol, int_desc = line_split
 
-            # Check if interface is down/admin-down and no description.  If so, print and count interface
+            # Check if interface is down/admin-down and no description.
             if ((int_status == 'admin-down' or int_status == 'down') and
                     (int_protocol == 'admin-down' or int_protocol == 'down') and (int_desc == '')):
 
                 # Match TenGigabitEthernet interfaces
                 if re.match(r'Te', int_name):
-                    # print "%-20s %-20s %-20s %-20s" % (int_name, int_status, int_protocol, int_desc)
                     tenG_count += 1
 
                 # Match GigabitEthernet interfaces
                 elif re.match(r'Gi', int_name):
-                    # print "%-20s %-20s %-20s %-20s" % (int_name, int_status, int_protocol, int_desc)
                     oneG_count += 1
 
-                # Uncomment line below if intention is to store list in tupled list, rather than simply print
-                # show_int_list.append((int_name, int_status, int_protocol, int_desc))
-
+    # Append data to tupled list for later reference
     show_int_list.append((target_host, tenG_count, oneG_count))
-
-    # Print summary of counts for both 10GE and 1GE interfaces
-    # print "\n\nNumber of available 10GE interfaces: %d" % tenG_count
-    # print "Number of available 1GE interfaces: %d\n" % oneG_count
-    # print "=============================\n"
-    # print show_int_list
 
 # Sort final list
 show_int_list.sort()
